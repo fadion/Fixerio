@@ -13,32 +13,6 @@ class ExchangeServiceProvider extends ServiceProvider {
      */
     protected $defer = false;
 
-    public function register()
-    {
-        $this->app->singleton('Riak\Contracts\Connection', function ($app) {
-            return new Connection(config('riak'));
-        });
-
-        $this->app->share()
-    }
-
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
-
-    /**
-     * Bootstrap the application events.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        $this->package('fadion/fixerio');
-    }
-
     /**
      * Register the service provider.
      *
