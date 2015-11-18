@@ -13,10 +13,10 @@ A thin wrapper for [Fixer.io](http://www.fixer.io), a service for foreign exchan
 }
 ```
 
-Laravel users can use the Facade for even easier access.
+Laravel 5 users can use the Facade for even easier access.
 
-- Add `Fadion\Fixerio\ExchangeServiceProvider` to your `config/app.php` file, inside the `providers` array.
-- Add a new alias: 'Exchange' => 'Fadion\Fixerio\Facades\Exchange' to your `config/app.php` file, inside the `aliases` array.
+- Add `Fadion\Fixerio\ExchangeServiceProvider::class` to your `config/app.php` file, inside the `providers` array.
+- Add a new alias: `'Exchange' => Fadion\Fixerio\Facades\Exchange::class` to your `config/app.php` file, inside the `aliases` array.
 
 ## Usage
 
@@ -33,7 +33,7 @@ $exchange->symbols(Currency::EUR, Currency::GBP);
 $rates = $exchange->get();
 ```
 
-By default, the base currency is `EUR`, so if that's your base, there's no need to set it. The symbols can be omitted too, as Fixer will return every supported currency.
+By default, the base currency is `EUR`, so if that's your base, there's no need to set it. The symbols can be omitted too, as Fixer will return all the supported currencies.
 
 A simplified example without the base and currency:
 
@@ -68,7 +68,37 @@ $exchange->base('AUD');
 $exchange->symbols('USD', 'EUR', 'GBP');
 ```
 
-Use whatever methods fills your needs.
+Use whatever method fills your needs.
+
+## Reponse
+
+The response is a simple array with currencies as keys and ratios as values. For a request like the following:
+
+```php
+$rates = (new Exchange())->symbols(Currency::USD, Currency::GBP)->get();
+```
+
+the response will be an array:
+
+```php
+array('GBP' => 0.7009, 'USD' => 1.0666)
+```
+
+which you can access with the keys as strings or using the currency constants:
+
+```php
+print $rates['EUR'];
+print $rates[Currency::GBP];
+```
+
+The last option, probably more preferable by some, is handling the response as an object. It needs only an extra method:
+
+```php
+$rates = (new Exchange())->symbols(Currency::USD, Currency::GBP)->asObject()->get();
+
+print $rates->USD;
+print $rates->GBP;
+```
 
 ## Error Handling
 
@@ -97,9 +127,9 @@ Nothing changes for Laravel apart from the Facade. It's just a convenience for a
 
 ```php
 use Exchange;
+use Fadion\Fixerio\Currency;
 
-$exchange = new Exchange();
-$rates = $exchange->get();
+$rates = Exchange::base(Currency::USD)->get();
 ```
 
 ## TODO
