@@ -70,6 +70,38 @@ $exchange->symbols('USD', 'EUR', 'GBP');
 
 Use whatever methods fills your needs.
 
+## Error Handling
+
+To handle errors, the package provides 2 exceptions. `ConnectionException` when http requests go wrong and `ResponseException` when the returned response from the api is not as expected. An example with exception handling:
+
+```php
+use Fadion\Fixerio\Exchange;
+use Fadion\Fixerio\Exceptions\ConnectionException;
+use Fadion\Fixerio\Exceptions\ResponseException;
+
+try {
+    $exchange = new Exchange();
+    $rates = $exchange->get();
+}
+catch (ConnectionException $e) {
+    // handle
+}
+catch (ResponseException $e) {
+    // handle
+}
+```
+
+## Laravel Usage
+
+Nothing changes for Laravel apart from the Facade. It's just a convenience for a tad shorter way of using the package:
+
+```php
+use Exchange;
+
+$exchange = new Exchange();
+$rates = $exchange->get();
+```
+
 ## TODO
 
 - Write unit tests.
