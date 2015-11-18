@@ -8,12 +8,12 @@ A thin wrapper for [Fixer.io](http://www.fixer.io), a service for foreign exchan
 ```json
 {
     "require": {
-        "fadion/fixerio": "dev-master"
+        "fadion/fixerio": "~1.0"
     }
 }
 ```
 
-Laravel 5 users can use the Facade for even easier access.
+Laravel users can use the Facade for even easier access.
 
 - Add `Fadion\Fixerio\ExchangeServiceProvider::class` to your `config/app.php` file, inside the `providers` array.
 - Add a new alias: `'Exchange' => Fadion\Fixerio\Facades\Exchange::class` to your `config/app.php` file, inside the `aliases` array.
