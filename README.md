@@ -15,8 +15,8 @@ A thin wrapper for [Fixer.io](http://www.fixer.io), a service for foreign exchan
 
 Laravel users can use the Facade for even easier access.
 
-- Add `Fadion\Fixerio\ExchangeServiceProvider` to your `app/config/app.php` file, inside the `providers` array.
-- Add a new alias: 'Exchange' => 'Fadion\Fixerio\Facades\Exchange' to your `app/config/app.php` file, inside the `aliases` array.
+- Add `Fadion\Fixerio\ExchangeServiceProvider` to your `config/app.php` file, inside the `providers` array.
+- Add a new alias: 'Exchange' => 'Fadion\Fixerio\Facades\Exchange' to your `config/app.php` file, inside the `aliases` array.
 
 ## Usage
 
