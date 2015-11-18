@@ -68,10 +68,14 @@ class Exchange {
 
     /**
      * Sets the protocol to https
+     * 
+     * @return Fadion\Fixerio\Exchange
      */
     public function secure()
     {
         $this->protocol = 'https';
+
+        return $this;
     }
 
     /**
@@ -131,6 +135,16 @@ class Exchange {
         $this->asObject = true;
 
         return $this;
+    }
+
+    /**
+     * Returns the correctly formatted url
+     * 
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->buildUrl($this->url);
     }
 
     /**
@@ -210,6 +224,9 @@ class Exchange {
 
         if (isset($response['rates']) and is_array($response['rates'])) {
             return ($this->asObject) ? (object) $response['rates'] : $response['rates'];
+        }
+        else if (isset($response['error'])) {
+            throw new ResponseException($response['error']);
         }
         else {
             throw new ResponseException('Response body is malformed.');

@@ -131,7 +131,3 @@ use Fadion\Fixerio\Currency;
 
 $rates = Exchange::base(Currency::USD)->get();
 ```
-
-## TODO
-
-- Write unit tests.
