@@ -47,6 +47,13 @@ class Exchange {
     private $symbols = [];
 
     /**
+     * Holds whether the response should be
+     * an object or not
+     * @var array
+     */
+    private $asObject = false;
+
+    /**
      * @param $guzze Guzzle client
      */
     public function __construct($guzzle = null)
@@ -109,6 +116,19 @@ class Exchange {
     public function historical($date)
     {
         $this->date = date('Y-m-d', strtotime($date));
+
+        return $this;
+    }
+
+    /**
+     * Sets the returned response to be an object,
+     * as opposed to an array
+     * 
+     * @return Fadion\Fixerio\Exchange
+     */
+    public function asObject()
+    {
+        $this->asObject = true;
 
         return $this;
     }
@@ -189,7 +209,7 @@ class Exchange {
         $response = json_decode($body, true);
 
         if (isset($response['rates']) and is_array($response['rates'])) {
-            return $response['rates'];
+            return ($this->asObject) ? (object) $response['rates'] : $response['rates'];
         }
         else {
             throw new ResponseException('Response body is malformed.');
