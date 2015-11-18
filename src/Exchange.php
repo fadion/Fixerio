@@ -23,7 +23,7 @@ class Exchange {
     private $url = "api.fixer.io";
 
     /**
-     * Date when an historical query is made
+     * Date when an historical call is made
      * @var string
      */
     private $date;
@@ -54,7 +54,7 @@ class Exchange {
     private $asObject = false;
 
     /**
-     * @param $guzze Guzzle client
+     * @param $guzzle Guzzle client
      */
     public function __construct($guzzle = null)
     {
@@ -69,7 +69,7 @@ class Exchange {
     /**
      * Sets the protocol to https
      * 
-     * @return Fadion\Fixerio\Exchange
+     * @return Exchange
      */
     public function secure()
     {
@@ -82,7 +82,7 @@ class Exchange {
      * Sets the base currency
      * 
      * @param  string $currency
-     * @return Fadion\Fixerio\Exchange
+     * @return Exchange
      */
     public function base($currency)
     {
@@ -92,11 +92,12 @@ class Exchange {
     }
 
     /**
-     * Sets the currencies to return in either a
-     * list of arguments or as an array
+     * Sets the currencies to return.
+     * Expects either a list of arguments or
+     * a single argument as array
      * 
      * @param  array $currencies
-     * @return Fadion\Fixerio\Exchange
+     * @return Exchange
      */
     public function symbols($currencies = null)
     {
@@ -115,7 +116,7 @@ class Exchange {
      * for any day since the selected date
      * 
      * @param  string $date
-     * @return Fadion\Fixerio\Exchange
+     * @return Exchange
      */
     public function historical($date)
     {
@@ -128,7 +129,7 @@ class Exchange {
      * Sets the returned response to be an object,
      * as opposed to an array
      * 
-     * @return Fadion\Fixerio\Exchange
+     * @return Exchange
      */
     public function asObject()
     {
@@ -165,7 +166,7 @@ class Exchange {
             return $this->prepareResponse($response);
         }
         // The client needs to know only one exception, no
-        // matter what exceptions is thrown by Guzzle
+        // matter what exception is thrown by Guzzle
         catch (ConnectException $e) {
             throw new ConnectionException($e->getMessage());
         }
