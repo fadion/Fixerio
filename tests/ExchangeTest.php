@@ -79,8 +79,11 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
 
     public function testResponse()
     {
+        $response = m::mock('StdClass');
+        $response->shouldReceive('getBody')->once()->andReturn(json_encode(['rates' => ['GBP', 'USD']]));
+
         $client = m::mock('GuzzleHttp\Client');
-        $client->shouldReceive('request')->once()->andReturn(new ClientResponse);
+        $client->shouldReceive('request')->once()->andReturn($response);
 
         $exchange = new Exchange($client);
         $exchange->symbols('GBP', 'USD');
@@ -97,30 +100,15 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
      */
     public function testResponseException()
     {
+        $response = m::mock('StdClass');
+        $response->shouldReceive('getBody')->once()->andReturn(json_encode(['error' => 'Some error message']));
+
         $client = m::mock('GuzzleHttp\Client');
-        $client->shouldReceive('request')->once()->andReturn(new InvalidClientResponse);
+        $client->shouldReceive('request')->once()->andReturn($response);
 
         $exchange = new Exchange($client);
 
         $exchange->get();
     }
     
-}
-
-class ClientResponse {
-
-    public function getBody()
-    {
-        return json_encode(['rates' => ['GBP', 'USD']]);
-    }
-
-}
-
-class InvalidClientResponse {
-
-    public function getBody()
-    {
-        return json_encode(['error' => 'Some error message']);
-    }
-
 }
