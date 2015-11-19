@@ -3,8 +3,8 @@
 use Mockery as m;
 use Fadion\Fixerio\Exchange;
 
-class ExchangeTest extends PHPUnit_Framework_TestCase {
-
+class ExchangeTest extends PHPUnit_Framework_TestCase
+{
     private $url = 'http://api.fixer.io';
 
     public function tearDown()

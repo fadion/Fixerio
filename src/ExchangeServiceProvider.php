@@ -4,8 +4,8 @@ namespace Fadion\Fixerio;
 
 use Illuminate\Support\ServiceProvider;
 
-class ExchangeServiceProvider extends ServiceProvider {
-
+class ExchangeServiceProvider extends ServiceProvider
+{
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -32,7 +32,7 @@ class ExchangeServiceProvider extends ServiceProvider {
      */
     public function provides()
     {
-        return array('exchange');
+        return ['exchange'];
     }
 
 }

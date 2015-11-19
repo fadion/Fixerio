@@ -8,8 +8,8 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\ClientException;
 
-class Exchange {
-
+class Exchange
+{
     /**
      * Guzzle client
      * @var GuzzleHttp\Client

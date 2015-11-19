@@ -6,8 +6,8 @@ namespace Fadion\Fixerio;
  * A list of avaialable currencies to simplify
  * their usage and prevent errors from typos.
  */
-class Currency {
-
+class Currency
+{
     const AUD = "AUD";
     const BGN = "BGN";
     const BRL = "BRL";
