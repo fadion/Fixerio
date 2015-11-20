@@ -5,8 +5,7 @@ namespace Fadion\Fixerio;
 use Fadion\Fixerio\Exceptions\ResponseException;
 use Fadion\Fixerio\Exceptions\ConnectionException;
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\TransferException;
 
 class Exchange
 {
@@ -167,10 +166,7 @@ class Exchange
         }
         // The client needs to know only one exception, no
         // matter what exception is thrown by Guzzle
-        catch (ConnectException $e) {
-            throw new ConnectionException($e->getMessage());
-        }
-        catch (ClientException $e) {
+        catch (TransferException $e) {
             throw new ConnectionException($e->getMessage());
         }
     }
