@@ -94,6 +94,23 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($rates, $expected);
     }
 
+    public function testResponseAsObject()
+    {
+        $response = m::mock('StdClass');
+        $response->shouldReceive('getBody')->once()->andReturn(json_encode(['rates' => ['GBP', 'USD']]));
+
+        $client = m::mock('GuzzleHttp\Client');
+        $client->shouldReceive('request')->once()->andReturn($response);
+
+        $exchange = new Exchange($client);
+        $exchange->symbols('GBP', 'USD');
+
+        $rates = $exchange->getAsObject();
+        $expected = (object) ['GBP', 'USD'];
+
+        $this->assertEquals($rates, $expected);
+    }
+
     /**
      * @expectedException Fadion\Fixerio\Exceptions\ResponseException
      * @expectedExceptionMessage Some error message
