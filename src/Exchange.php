@@ -125,19 +125,6 @@ class Exchange
     }
 
     /**
-     * Sets the returned response to be an object,
-     * as opposed to an array
-     * 
-     * @return Exchange
-     */
-    public function asObject()
-    {
-        $this->asObject = true;
-
-        return $this;
-    }
-
-    /**
      * Returns the correctly formatted url
      * 
      * @return string
@@ -169,6 +156,21 @@ class Exchange
         catch (TransferException $e) {
             throw new ConnectionException($e->getMessage());
         }
+    }
+
+    /**
+     * Alias of get() but returns an object
+     * response.
+     * 
+     * @throws ConnectionException if the request is incorrect or times out
+     * @throws ResponseException if the response is malformed
+     * @return object
+     */
+    public function getAsObject()
+    {
+        $this->asObject = true;
+
+        return $this->get();
     }
 
     /**
