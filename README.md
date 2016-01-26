@@ -91,10 +91,10 @@ print $rates['EUR'];
 print $rates[Currency::GBP];
 ```
 
-The last option, probably more preferable by some, is handling the response as an object. It needs only an extra method:
+The last option, probably more preferable by some, is handling the response as an object:
 
 ```php
-$rates = (new Exchange())->symbols(Currency::USD, Currency::GBP)->asObject()->get();
+$rates = (new Exchange())->symbols(Currency::USD, Currency::GBP)->getAsObject();
 
 print $rates->USD;
 print $rates->GBP;
