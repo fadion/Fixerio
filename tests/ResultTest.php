@@ -22,6 +22,11 @@ class ResultTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(1.23, $result->getRate(Currency::USD));
         $this->assertEquals(1.01, $result->getRate(Currency::GBP));
+
+        // Check that asking for the Base will return 1
+        $this->assertEquals(1, $result->getRate(Currency::EUR));
+
+        // Null if currency not in result
         $this->assertNull($result->getRate(Currency::HKD));
         $this->assertNull($result->getRate('invalid'));
     }

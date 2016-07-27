@@ -103,7 +103,7 @@ print $rates->GBP;
 The last option is to return the response as a `Result` class. This allows access to the full set of properties returned from the feed. 
 
 ```php
-$result = (new Exchange())->symbols(Currency::USD, Currency::GBP)->getAsObject();
+$result = (new Exchange())->symbols(Currency::USD, Currency::GBP)->getResult();
 
 $date = $result->getDate(); // The date the data is from
 $rates = $result->getRates(); // Array of rates as above

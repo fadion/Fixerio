@@ -116,7 +116,7 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
     {
         $response = m::mock('StdClass');
         $response->shouldReceive('getBody')->once()->andReturn(json_encode([
-            'base' => 'USD',
+            'base' => 'EUR',
             'date' => '2016-01-02',
             'rates' => [
                 'GBP' => 1.01,
@@ -132,7 +132,7 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
         $result = $exchange->getResult();
         $this->assertInstanceOf('\Fadion\Fixerio\Result', $result);
 
-        $this->assertEquals(1.02, $result->getRate(Currency::USD));
+        $this->assertEquals(1.01, $result->getRate(Currency::GBP));
     }
 
     /**
