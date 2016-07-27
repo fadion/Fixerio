@@ -71,6 +71,14 @@ class Result
      */
     public function getRate($code)
     {
+        // the result won't have the base code in it,
+        // because that would always be 1. But to make
+        // dynamic code easier this prevents null if
+        // the base code is asked for
+        if ($code == $this->getBase()) {
+            return 1.0;
+        }
+
         if (isset($this->rates[$code])) {
             return $this->rates[$code];
         }
