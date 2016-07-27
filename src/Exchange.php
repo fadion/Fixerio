@@ -2,6 +2,7 @@
 
 namespace Fadion\Fixerio;
 
+use DateTime;
 use Fadion\Fixerio\Exceptions\ResponseException;
 use Fadion\Fixerio\Exceptions\ConnectionException;
 use GuzzleHttp\Client as GuzzleClient;
@@ -67,7 +68,7 @@ class Exchange
 
     /**
      * Sets the protocol to https
-     * 
+     *
      * @return Exchange
      */
     public function secure()
@@ -79,7 +80,7 @@ class Exchange
 
     /**
      * Sets the base currency
-     * 
+     *
      * @param  string $currency
      * @return Exchange
      */
@@ -94,7 +95,7 @@ class Exchange
      * Sets the currencies to return.
      * Expects either a list of arguments or
      * a single argument as array
-     * 
+     *
      * @param  array $currencies
      * @return Exchange
      */
@@ -113,7 +114,7 @@ class Exchange
      * Defines that the api call should be
      * historical, meaning it will return rates
      * for any day since the selected date
-     * 
+     *
      * @param  string $date
      * @return Exchange
      */
@@ -126,7 +127,7 @@ class Exchange
 
     /**
      * Returns the correctly formatted url
-     * 
+     *
      * @return string
      */
     public function getUrl()
@@ -137,7 +138,7 @@ class Exchange
     /**
      * Makes the request and returns the response
      * with the rates.
-     * 
+     *
      * @throws ConnectionException if the request is incorrect or times out
      * @throws ResponseException if the response is malformed
      * @return array
@@ -159,9 +160,33 @@ class Exchange
     }
 
     /**
+     * Makes the request and returns the response
+     * with the rates, as a Result object
+     *
+     * @throws ConnectionException if the request is incorrect or times out
+     * @throws ResponseException if the response is malformed
+     * @return Result
+     */
+    public function getResult()
+    {
+        $url = $this->buildUrl($this->url);
+
+        try {
+            $response = $this->makeRequest($url);
+
+            return $this->prepareResponseResult($response);
+        }
+        // The client needs to know only one exception, no
+        // matter what exception is thrown by Guzzle
+        catch (TransferException $e) {
+            throw new ConnectionException($e->getMessage());
+        }
+    }
+
+    /**
      * Alias of get() but returns an object
      * response.
-     * 
+     *
      * @throws ConnectionException if the request is incorrect or times out
      * @throws ResponseException if the response is malformed
      * @return object
@@ -175,7 +200,7 @@ class Exchange
 
     /**
      * Forms the correct url from the different parts
-     * 
+     *
      * @param  string $url
      * @return string
      */
@@ -201,7 +226,7 @@ class Exchange
 
     /**
      * Makes the http request
-     * 
+     *
      * @param  string $url
      * @return string
      */
@@ -223,6 +248,31 @@ class Exchange
 
         if (isset($response['rates']) and is_array($response['rates'])) {
             return ($this->asObject) ? (object) $response['rates'] : $response['rates'];
+        }
+        else if (isset($response['error'])) {
+            throw new ResponseException($response['error']);
+        }
+        else {
+            throw new ResponseException('Response body is malformed.');
+        }
+    }
+
+    /**
+     * @param  string $body
+     * @throws ResponseException if the response is malformed
+     * @return Result
+     */
+    private function prepareResponseResult($body)
+    {
+        $response = json_decode($body, true);
+
+        if (isset($response['rates']) and is_array($response['rates'])
+            and isset($response['base']) and isset($response['date'])) {
+            return new Result(
+                $response['base'],
+                new DateTime($response['date']),
+                $response['rates']
+            );
         }
         else if (isset($response['error'])) {
             throw new ResponseException($response['error']);
