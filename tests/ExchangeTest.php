@@ -1,5 +1,6 @@
 <?php
 
+use Fadion\Fixerio\Currency;
 use Mockery as m;
 use Fadion\Fixerio\Exchange;
 
@@ -111,6 +112,29 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($rates, $expected);
     }
 
+    public function testResponseAsResult()
+    {
+        $response = m::mock('StdClass');
+        $response->shouldReceive('getBody')->once()->andReturn(json_encode([
+            'base' => 'USD',
+            'date' => '2016-01-02',
+            'rates' => [
+                'GBP' => 1.01,
+                'USD' => 1.02
+            ],
+        ]));
+
+        $client = m::mock('GuzzleHttp\Client');
+        $client->shouldReceive('request')->once()->andReturn($response);
+
+        $exchange = new Exchange($client);
+
+        $result = $exchange->getResult();
+        $this->assertInstanceOf('\Fadion\Fixerio\Result', $result);
+
+        $this->assertEquals(1.02, $result->getRate(Currency::USD));
+    }
+
     /**
      * @expectedException Fadion\Fixerio\Exceptions\ResponseException
      * @expectedExceptionMessage Some error message
@@ -127,5 +151,22 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
 
         $exchange->get();
     }
-    
+
+    /**
+     * @expectedException Fadion\Fixerio\Exceptions\ResponseException
+     * @expectedExceptionMessage Some error message
+     */
+    public function testResponseResultException()
+    {
+        $response = m::mock('StdClass');
+        $response->shouldReceive('getBody')->once()->andReturn(json_encode(['error' => 'Some error message']));
+
+        $client = m::mock('GuzzleHttp\Client');
+        $client->shouldReceive('request')->once()->andReturn($response);
+
+        $exchange = new Exchange($client);
+
+        $exchange->getResult();
+    }
+
 }

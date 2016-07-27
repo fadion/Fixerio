@@ -70,7 +70,7 @@ $exchange->symbols('USD', 'EUR', 'GBP');
 
 Use whatever method fills your needs.
 
-## Reponse
+## Response
 
 The response is a simple array with currencies as keys and ratios as values. For a request like the following:
 
@@ -91,13 +91,23 @@ print $rates['EUR'];
 print $rates[Currency::GBP];
 ```
 
-The last option, probably more preferable by some, is handling the response as an object:
+There is an option to handle the response as an object:
 
 ```php
 $rates = (new Exchange())->symbols(Currency::USD, Currency::GBP)->getAsObject();
 
 print $rates->USD;
 print $rates->GBP;
+```
+
+The last option is to return the response as a `Result` class. This allows access to the full set of properties returned from the feed. 
+
+```php
+$result = (new Exchange())->symbols(Currency::USD, Currency::GBP)->getAsObject();
+
+$date = $result->getDate(); // The date the data is from
+$rates = $result->getRates(); // Array of rates as above
+$usd = $result->getRate(Currency::USD); // Will return null if there was no value
 ```
 
 ## Error Handling
