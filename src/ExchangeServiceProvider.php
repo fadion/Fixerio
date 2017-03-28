@@ -20,7 +20,7 @@ class ExchangeServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['exchange'] = $this->app->share(function($app) {
+        $this->app->singleton(Exchange::class, function ($app) {
             return new Exchange;
         });
     }
@@ -32,7 +32,7 @@ class ExchangeServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['exchange'];
+        return [Exchange::class];
     }
 
 }
