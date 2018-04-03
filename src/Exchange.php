@@ -54,6 +54,13 @@ class Exchange
     private $asObject = false;
 
     /**
+     * Holds the Fixer.io API key
+     *
+     * @var null|string
+     */
+    private $key = null;
+
+    /**
      * @param $guzzle Guzzle client
      */
     public function __construct($guzzle = null)
@@ -86,6 +93,19 @@ class Exchange
     public function base($currency)
     {
         $this->base = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Sets the API key
+     *
+     * @param  string $key
+     * @return Exchange
+     */
+    public function key($key)
+    {
+        $this->key = $key;
 
         return $this;
     }
