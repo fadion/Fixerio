@@ -27,6 +27,7 @@ use Fadion\Fixerio\Exchange;
 use Fadion\Fixerio\Currency;
 
 $exchange = new Exchange();
+$exchange->key("YOUR_ACCESS_KEY");
 $exchange->base(Currency::USD);
 $exchange->symbols(Currency::EUR, Currency::GBP);
 
@@ -38,13 +39,14 @@ By default, the base currency is `EUR`, so if that's your base, there's no need 
 A simplified example without the base and currency:
 
 ```php
-$rates = (new Exchange())->get();
+$rates = (new Exchange())->key("YOUR_ACCESS_KEY")->get();
 ```
 
 The `historical` option will return currency rates for every day since the date you've specified. The base currency and symbols can be omitted here to, but let's see a full example:
 
 ```php
 $exchange = new Exchange();
+$exchange->key("YOUR_ACCESS_KEY");
 $exchange->historical('2012-12-12');
 $exchange->base(Currency::AUD);
 $exchange->symbols(Currency::USD, Currency::EUR, Currency::GBP);
@@ -75,7 +77,7 @@ Use whatever method fills your needs.
 The response is a simple array with currencies as keys and ratios as values. For a request like the following:
 
 ```php
-$rates = (new Exchange())->symbols(Currency::USD, Currency::GBP)->get();
+$rates = (new Exchange())->key("YOUR_ACCESS_KEY")->symbols(Currency::USD, Currency::GBP)->get();
 ```
 
 the response will be an array:
@@ -94,7 +96,7 @@ print $rates[Currency::GBP];
 There is an option to handle the response as an object:
 
 ```php
-$rates = (new Exchange())->symbols(Currency::USD, Currency::GBP)->getAsObject();
+$rates = (new Exchange())->key("YOUR_ACCESS_KEY")->symbols(Currency::USD, Currency::GBP)->getAsObject();
 
 print $rates->USD;
 print $rates->GBP;
@@ -103,7 +105,7 @@ print $rates->GBP;
 The last option is to return the response as a `Result` class. This allows access to the full set of properties returned from the feed. 
 
 ```php
-$result = (new Exchange())->symbols(Currency::USD, Currency::GBP)->getResult();
+$result = (new Exchange())->key("YOUR_ACCESS_KEY")->symbols(Currency::USD, Currency::GBP)->getResult();
 
 $date = $result->getDate(); // The date the data is from
 $rates = $result->getRates(); // Array of rates as above
@@ -121,6 +123,7 @@ use Fadion\Fixerio\Exceptions\ResponseException;
 
 try {
     $exchange = new Exchange();
+    $exchange->key("YOUR_ACCESS_KEY");
     $rates = $exchange->get();
 }
 catch (ConnectionException $e) {
@@ -140,4 +143,12 @@ use Exchange;
 use Fadion\Fixerio\Currency;
 
 $rates = Exchange::base(Currency::USD)->get();
+```
+
+To use this Facade, you should set your access key in your `config/services.php` file:
+
+```php
+'fixer'=>[
+    'key'=>env("FIXER_ACCESS_KEY"),
+]
 ```
