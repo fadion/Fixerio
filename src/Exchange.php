@@ -20,7 +20,7 @@ class Exchange
      * URL of fixer.io
      * @var string
      */
-    private $url = "api.fixer.io";
+    private $url = "data.fixer.io/api";
 
     /**
      * Date when an historical call is made
