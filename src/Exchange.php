@@ -235,6 +235,10 @@ class Exchange
 
         $url .= '?base=' . $this->base;
 
+        if ($this->key) {
+            $url .= '&access_key=' . $this->key;
+        }
+
         if ($symbols = $this->symbols) {
             $url .= '&symbols=' . implode(',', $symbols);
         }
