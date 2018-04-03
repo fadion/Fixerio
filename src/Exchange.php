@@ -3,8 +3,8 @@
 namespace Fadion\Fixerio;
 
 use DateTime;
-use Fadion\Fixerio\Exceptions\ResponseException;
 use Fadion\Fixerio\Exceptions\ConnectionException;
+use Fadion\Fixerio\Exceptions\ResponseException;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\TransferException;
 
@@ -60,8 +60,7 @@ class Exchange
     {
         if (isset($guzzle)) {
             $this->guzzle = $guzzle;
-        }
-        else {
+        } else {
             $this->guzzle = new GuzzleClient();
         }
     }
@@ -154,7 +153,7 @@ class Exchange
         }
         // The client needs to know only one exception, no
         // matter what exception is thrown by Guzzle
-        catch (TransferException $e) {
+         catch (TransferException $e) {
             throw new ConnectionException($e->getMessage());
         }
     }
@@ -178,7 +177,7 @@ class Exchange
         }
         // The client needs to know only one exception, no
         // matter what exception is thrown by Guzzle
-        catch (TransferException $e) {
+         catch (TransferException $e) {
             throw new ConnectionException($e->getMessage());
         }
     }
@@ -206,19 +205,18 @@ class Exchange
      */
     private function buildUrl($url)
     {
-        $url = $this->protocol.'://'.$url.'/';
+        $url = $this->protocol . '://' . $url . '/';
 
         if ($this->date) {
             $url .= $this->date;
-        }
-        else {
+        } else {
             $url .= 'latest';
         }
 
-        $url .= '?base='.$this->base;
+        $url .= '?base=' . $this->base;
 
         if ($symbols = $this->symbols) {
-            $url .= '&symbols='.implode(',', $symbols);
+            $url .= '&symbols=' . implode(',', $symbols);
         }
 
         return $url;
@@ -248,11 +246,9 @@ class Exchange
 
         if (isset($response['rates']) and is_array($response['rates'])) {
             return ($this->asObject) ? (object) $response['rates'] : $response['rates'];
-        }
-        else if (isset($response['error'])) {
+        } else if (isset($response['error'])) {
             throw new ResponseException($response['error']);
-        }
-        else {
+        } else {
             throw new ResponseException('Response body is malformed.');
         }
     }
@@ -273,11 +269,9 @@ class Exchange
                 new DateTime($response['date']),
                 $response['rates']
             );
-        }
-        else if (isset($response['error'])) {
+        } else if (isset($response['error'])) {
             throw new ResponseException($response['error']);
-        }
-        else {
+        } else {
             throw new ResponseException('Response body is malformed.');
         }
     }
