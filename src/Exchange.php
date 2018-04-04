@@ -3,8 +3,8 @@
 namespace Fadion\Fixerio;
 
 use DateTime;
-use Fadion\Fixerio\Exceptions\ResponseException;
 use Fadion\Fixerio\Exceptions\ConnectionException;
+use Fadion\Fixerio\Exceptions\ResponseException;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\TransferException;
 
@@ -20,7 +20,7 @@ class Exchange
      * URL of fixer.io
      * @var string
      */
-    private $url = "api.fixer.io";
+    private $url = "data.fixer.io/api";
 
     /**
      * Date when an historical call is made
@@ -54,14 +54,20 @@ class Exchange
     private $asObject = false;
 
     /**
+     * Holds the Fixer.io API key
+     *
+     * @var null|string
+     */
+    private $key = null;
+
+    /**
      * @param $guzzle Guzzle client
      */
     public function __construct($guzzle = null)
     {
         if (isset($guzzle)) {
             $this->guzzle = $guzzle;
-        }
-        else {
+        } else {
             $this->guzzle = new GuzzleClient();
         }
     }
@@ -87,6 +93,19 @@ class Exchange
     public function base($currency)
     {
         $this->base = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Sets the API key
+     *
+     * @param  string $key
+     * @return Exchange
+     */
+    public function key($key)
+    {
+        $this->key = $key;
 
         return $this;
     }
@@ -154,7 +173,7 @@ class Exchange
         }
         // The client needs to know only one exception, no
         // matter what exception is thrown by Guzzle
-        catch (TransferException $e) {
+         catch (TransferException $e) {
             throw new ConnectionException($e->getMessage());
         }
     }
@@ -178,7 +197,7 @@ class Exchange
         }
         // The client needs to know only one exception, no
         // matter what exception is thrown by Guzzle
-        catch (TransferException $e) {
+         catch (TransferException $e) {
             throw new ConnectionException($e->getMessage());
         }
     }
@@ -206,19 +225,22 @@ class Exchange
      */
     private function buildUrl($url)
     {
-        $url = $this->protocol.'://'.$url.'/';
+        $url = $this->protocol . '://' . $url . '/';
 
         if ($this->date) {
             $url .= $this->date;
-        }
-        else {
+        } else {
             $url .= 'latest';
         }
 
-        $url .= '?base='.$this->base;
+        $url .= '?base=' . $this->base;
+
+        if ($this->key) {
+            $url .= '&access_key=' . $this->key;
+        }
 
         if ($symbols = $this->symbols) {
-            $url .= '&symbols='.implode(',', $symbols);
+            $url .= '&symbols=' . implode(',', $symbols);
         }
 
         return $url;
@@ -248,11 +270,9 @@ class Exchange
 
         if (isset($response['rates']) and is_array($response['rates'])) {
             return ($this->asObject) ? (object) $response['rates'] : $response['rates'];
-        }
-        else if (isset($response['error'])) {
+        } else if (isset($response['error'])) {
             throw new ResponseException($response['error']);
-        }
-        else {
+        } else {
             throw new ResponseException('Response body is malformed.');
         }
     }
@@ -273,11 +293,9 @@ class Exchange
                 new DateTime($response['date']),
                 $response['rates']
             );
-        }
-        else if (isset($response['error'])) {
+        } else if (isset($response['error'])) {
             throw new ResponseException($response['error']);
-        }
-        else {
+        } else {
             throw new ResponseException('Response body is malformed.');
         }
     }

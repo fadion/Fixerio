@@ -21,7 +21,7 @@ class ExchangeServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(Exchange::class, function ($app) {
-            return new Exchange;
+            return (new Exchange)->key(config("services.fixer.key"));
         });
     }
 
