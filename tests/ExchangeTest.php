@@ -6,7 +6,7 @@ use Fadion\Fixerio\Exchange;
 
 class ExchangeTest extends PHPUnit_Framework_TestCase
 {
-    private $url = 'http://api.fixer.io';
+    private $url = 'http://data.fixer.io/api';
 
     public function tearDown()
     {
