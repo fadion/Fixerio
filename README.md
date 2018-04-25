@@ -134,6 +134,31 @@ catch (ResponseException $e) {
 }
 ```
 
+## Convert Endpoint
+Accessing the currency conversion endpoint may be done like so:
+
+```php
+use Fadion\Fixerio\Currency; //optional if you want to use currency constants
+use Fadion\Fixerio\Convert;
+
+$converter = new Convert();
+$converter->key('YOUR_ACCESS_KEY');
+$converter->from('USD');
+$converter->to('CAD');
+$converter->amount('22.50');
+$converter = new Convert('USD', 'CAD', '22.50');
+$result = $converter->get();
+print $result;
+
+```
+
+You may also use currency constants
+
+```php
+$converter->from(Currency::USD);
+```
+
+
 ## Laravel Usage
 
 Nothing changes for Laravel apart from the Facade. It's just a convenience for a tad shorter way of using the package:

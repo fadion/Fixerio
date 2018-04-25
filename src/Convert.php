@@ -42,23 +42,82 @@ class Convert
      */
     private $key = null;
 
+
+    /**
+     * Holds the from currency
+     *
+     * @var null|string
+     */
+    private $from = null;
+    
+    /**
+     * Holds the to currency
+     *
+     * @var null|string
+     */
+    private $to = null;
+    
+    /**
+     * Holds the amount to convert
+     *
+     * @var null|string
+     */
+    private $amount = null;
+    
+    
     /**
      * @param $guzzle Guzzle client
      */
-    public function __construct($from, $to, $amount, $guzzle = null)
+    public function __construct($guzzle = null)
     {
         if (isset($guzzle)) {
             $this->guzzle = $guzzle;
         } else {
             $this->guzzle = new GuzzleClient();
-        }
-        
-        $this->from = $from;
-        $this->to = $to;
-        $this->amount = $amount;
-        
+        }        
     }
 
+    /**
+     * Sets the from currency
+     *
+     * @param  string $to
+     * @return Exchange
+     */
+    public function from($from)
+    {
+        $this->from = $from;
+
+        return $this;
+    }
+
+
+    /**
+     * Sets the to currency
+     *
+     * @param  string $to
+     * @return Exchange
+     */
+    public function to($to)
+    {
+        $this->to = $to;
+
+        return $this;
+    }
+
+
+    /**
+     * Sets the amount
+     *
+     * @param  string $to
+     * @return Exchange
+     */
+    public function amount($amount)
+    {
+        $this->amount = $amount;
+
+        return $this;
+    }
+    
     /**
      * Sets the protocol to https
      *
@@ -212,6 +271,8 @@ class Convert
             return ($this->asObject) ? (object) $response['result'] : $response['result'];
         } else if (isset($response['error'])) {
             throw new ResponseException($response['error']);
+            // var_dump($response);
+            // throw new ResponseException("{$response['error']['type']} {$response['error']['info']}");
         } else {
             throw new ResponseException('Response body is malformed.');
         }
@@ -238,5 +299,4 @@ class Convert
             throw new ResponseException('Response body is malformed.');
         }
     }
-
 }

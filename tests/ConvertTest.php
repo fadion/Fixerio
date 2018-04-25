@@ -12,18 +12,27 @@ class ConvertTest extends PHPUnit_Framework_TestCase
     {
         m::close();
     }
-
+    
     public function testParams()
     {
-        $url = (new Convert('USD', 'CAD', '22.50'))->getUrl();
+        $converter = new Convert();
+        $converter->from('USD');
+        $converter->to('CAD');
+        $converter->amount('22.50');
+        $url = $converter->getUrl();
         $expected = $this->url . '/convert&from=USD&to=CAD&amount=22.50';
-
+        
         $this->assertEquals($url, $expected);
     }
 
     public function testSecure()
     {
-        $url = (new Convert('USD', 'CAD', '22.50'))->secure()->getUrl();
+        $converter = new Convert();
+        $converter->from('USD');
+        $converter->to('CAD');
+        $converter->amount('22.50');
+        $converter->secure();
+        $url = $converter->getUrl();
         $expected = str_replace('http', 'https', $this->url).'/convert&from=USD&to=CAD&amount=22.50';
 
         $this->assertEquals($url, $expected);
@@ -37,10 +46,13 @@ class ConvertTest extends PHPUnit_Framework_TestCase
         $client = m::mock('GuzzleHttp\Client');
         $client->shouldReceive('request')->once()->andReturn($response);
 
-        $convert = new Convert(Currency::USD, Currency::CAD, '37.50', $client);
+        $converter = new Convert($client);
+        $converter->from('USD');
+        $converter->to('CAD');
+        $converter->amount('22.50');
+        $actual = $converter->get();
         $expected = 47.3685;
-        $actual = $convert->get();
-
+        
         $this->assertEquals($actual, $expected);
     }
     
@@ -52,9 +64,12 @@ class ConvertTest extends PHPUnit_Framework_TestCase
         $client = m::mock('GuzzleHttp\Client');
         $client->shouldReceive('request')->once()->andReturn($response);
 
-        $convert = new Convert(Currency::USD, Currency::CAD, '37.50', $client);
+        $converter = new Convert($client);
+        $converter->from('USD');
+        $converter->to('CAD');
+        $converter->amount('22.50');
+        $actual = $converter->getAsObject();
         $expected = (object) 47.3685;
-        $actual = $convert->getAsObject();
 
         $this->assertEquals($actual, $expected);
     }
@@ -71,9 +86,8 @@ class ConvertTest extends PHPUnit_Framework_TestCase
         $client = m::mock('GuzzleHttp\Client');
         $client->shouldReceive('request')->once()->andReturn($response);
 
-        $convert = new Convert(Currency::USD, Currency::CAD, '37.50', $client);
-
-        $convert->get();
+        $converter = new Convert($client);
+        $converter->get();
     }
 
     /**
@@ -88,8 +102,8 @@ class ConvertTest extends PHPUnit_Framework_TestCase
         $client = m::mock('GuzzleHttp\Client');
         $client->shouldReceive('request')->once()->andReturn($response);
 
-        $convert = new Convert(Currency::USD, Currency::CAD, '37.50', $client);
+        $converter = new Convert($client);
 
-        $convert->getResult();
+        $converter->getResult();
     }
 }
