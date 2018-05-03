@@ -293,8 +293,8 @@ class Exchange
                 new DateTime($response['date']),
                 $response['rates']
             );
-        } else if (isset($response['error'])) {
-            throw new ResponseException($response['error']);
+        } else if (isset($response['error']['info'])) {
+            throw new ResponseException($response['error']['info']);
         } else {
             throw new ResponseException('Response body is malformed.');
         }
