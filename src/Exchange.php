@@ -262,19 +262,29 @@ class Exchange
     /**
      * @param  string $body
      * @throws ResponseException if the response is malformed
-     * @return array
+     * @return array|\stdClass
      */
     private function prepareResponse($body)
     {
         $response = json_decode($body, true);
 
-        if (isset($response['rates']) and is_array($response['rates'])) {
-            return ($this->asObject) ? (object) $response['rates'] : $response['rates'];
-        } else if (isset($response['error'])) {
-            throw new ResponseException($response['error']);
-        } else {
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new ResponseException(json_last_error_msg());
+        }
+
+        if ($response['success'] === false) {
+            throw new ResponseException($response['error']['info'], $response['error']['code']);
+        }
+
+        if (!is_array($response['rates'])) {
             throw new ResponseException('Response body is malformed.');
         }
+
+        if ($this->asObject) {
+            return (object) $response['rates'];
+        }
+
+        return $response['rates'];
     }
 
     /**
@@ -286,6 +296,14 @@ class Exchange
     {
         $response = json_decode($body, true);
 
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new ResponseException(json_last_error_msg());
+        }
+
+        if ($response['success'] === false) {
+            throw new ResponseException($response['error']['info'], $response['error']['code']);
+        }
+
         if (isset($response['rates']) and is_array($response['rates'])
             and isset($response['base']) and isset($response['date'])) {
             return new Result(
@@ -293,11 +311,9 @@ class Exchange
                 new DateTime($response['date']),
                 $response['rates']
             );
-        } else if (isset($response['error'])) {
-            throw new ResponseException($response['error']);
-        } else {
-            throw new ResponseException('Response body is malformed.');
         }
+
+        throw new ResponseException('Response body is malformed.');
     }
 
 }

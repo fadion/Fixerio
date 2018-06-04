@@ -8,6 +8,24 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
 {
     private $url = 'http://data.fixer.io/api';
 
+    private static $errorResponse =  [
+        'success' => false,
+        'error' => [
+            'code' => 999,
+            'info' => 'Some error message',
+        ],
+    ];
+
+    private static $successfulResponse = [
+        'success' => true,
+        'base' => 'EUR',
+        'date' => '2016-01-02',
+        'rates' => [
+            'GBP' => 1.01,
+            'USD' => 1.02
+        ],
+    ];
+
     public function tearDown()
     {
         m::close();
@@ -81,7 +99,7 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
     public function testResponse()
     {
         $response = m::mock('StdClass');
-        $response->shouldReceive('getBody')->once()->andReturn(json_encode(['rates' => ['GBP', 'USD']]));
+        $response->shouldReceive('getBody')->once()->andReturn(json_encode(self::$successfulResponse));
 
         $client = m::mock('GuzzleHttp\Client');
         $client->shouldReceive('request')->once()->andReturn($response);
@@ -90,7 +108,7 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
         $exchange->symbols('GBP', 'USD');
 
         $rates = $exchange->get();
-        $expected = ['GBP', 'USD'];
+        $expected = self::$successfulResponse['rates'];
 
         $this->assertEquals($rates, $expected);
     }
@@ -98,7 +116,7 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
     public function testResponseAsObject()
     {
         $response = m::mock('StdClass');
-        $response->shouldReceive('getBody')->once()->andReturn(json_encode(['rates' => ['GBP', 'USD']]));
+        $response->shouldReceive('getBody')->once()->andReturn(json_encode(self::$successfulResponse));
 
         $client = m::mock('GuzzleHttp\Client');
         $client->shouldReceive('request')->once()->andReturn($response);
@@ -107,7 +125,7 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
         $exchange->symbols('GBP', 'USD');
 
         $rates = $exchange->getAsObject();
-        $expected = (object) ['GBP', 'USD'];
+        $expected = (object) self::$successfulResponse['rates'];
 
         $this->assertEquals($rates, $expected);
     }
@@ -115,14 +133,7 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
     public function testResponseAsResult()
     {
         $response = m::mock('StdClass');
-        $response->shouldReceive('getBody')->once()->andReturn(json_encode([
-            'base' => 'EUR',
-            'date' => '2016-01-02',
-            'rates' => [
-                'GBP' => 1.01,
-                'USD' => 1.02
-            ],
-        ]));
+        $response->shouldReceive('getBody')->once()->andReturn(json_encode(self::$successfulResponse));
 
         $client = m::mock('GuzzleHttp\Client');
         $client->shouldReceive('request')->once()->andReturn($response);
@@ -142,7 +153,7 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
     public function testResponseException()
     {
         $response = m::mock('StdClass');
-        $response->shouldReceive('getBody')->once()->andReturn(json_encode(['error' => 'Some error message']));
+        $response->shouldReceive('getBody')->once()->andReturn(json_encode(self::$errorResponse));
 
         $client = m::mock('GuzzleHttp\Client');
         $client->shouldReceive('request')->once()->andReturn($response);
@@ -159,7 +170,7 @@ class ExchangeTest extends PHPUnit_Framework_TestCase
     public function testResponseResultException()
     {
         $response = m::mock('StdClass');
-        $response->shouldReceive('getBody')->once()->andReturn(json_encode(['error' => 'Some error message']));
+        $response->shouldReceive('getBody')->once()->andReturn(json_encode(self::$errorResponse));
 
         $client = m::mock('GuzzleHttp\Client');
         $client->shouldReceive('request')->once()->andReturn($response);
