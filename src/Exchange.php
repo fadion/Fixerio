@@ -271,7 +271,7 @@ class Exchange
         if (isset($response['rates']) and is_array($response['rates'])) {
             return ($this->asObject) ? (object) $response['rates'] : $response['rates'];
         } else if (isset($response['error'])) {
-            throw new ResponseException($response['error']);
+            throw new ResponseException($response['error']['type'], $response['error']['code']);
         } else {
             throw new ResponseException('Response body is malformed.');
         }
