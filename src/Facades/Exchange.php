@@ -14,6 +14,9 @@ class Exchange extends Facade
      *
      * @return string
      */
-    protected static function getFacadeAccessor() { return 'exchange'; }
+    protected static function getFacadeAccessor()
+    {
+        return \Fadion\Fixerio\Exchange::class;
+    }
 
 }
